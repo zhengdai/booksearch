@@ -1,29 +1,34 @@
-version: '3.3'
+version: '3'
 services:
   elasticsearch:
-    image: gui66497/elasticsearch:7.2.0
-    container_name: es
+    image: zhengdai/es_ik:7.10.1
+    container_name: elasticsearch
     ports:
     - "9200:9200"
     - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx4G -Xms4G"
+      ES_JAVA_OPTS: "-Xmx1G -Xms1G"
       ELASTIC_PASSWORD: changeme
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --user elastic:changeme --silent --fail localhost:9200/_cluster/health || exit 1" ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
     volumes:
     - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     - ./datas/es/:/usr/share/elasticsearch/data
     networks:
-    - elk
+    - elasticsearch
 
   kibana:
-    image: kibana:7.2.0
+    image: kibana:7.10.1
     container_name: kibana
     ports:
-    - "5601:5601"
+    - "8888:5601"
     volumes:
     - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
     networks:
-    - elk
+    - elasticsearch
     depends_on:
     - elasticsearch
 
@@ -32,42 +37,39 @@ services:
     build: .
     ports:
     - "3000:3000" # Expose API port
-    - "9229:9229" # Expose Node process debug port (disable in production)
+#    - "9229:9229" # Expose Node process debug port (disable in production)
     environment: # Set ENV vars
     - NODE_ENV=local
     - ES_HOST=elasticsearch
     - PORT=3000
     volumes: # Attach local book data directory
-    - ./fscrawler/books:/usr/src/app/books
+    - ./books:/usr/src/app/books
     networks:
-    - elk
+    - elasticsearch
 
   frontend: # Nginx Server For Frontend App
     container_name: frontend
     image: nginx
     volumes: # Serve local "public" dir
     - ./public:/usr/share/nginx/html
-    command:
-      bash -c "sed -i 's/API_HOST/192.168.1.35/' /usr/share/nginx/html/app.js && nginx -g 'daemon off;'"
     ports:
-    - "8080:80" # Forward site to localhost:8080
+    - "8889:80" # Forward site to localhost:8080
     networks:
-    - elk
+    - elasticsearch
 
   fscrawler: # 文档自动存es
     container_name: fscrawler
-    ports:
-      - "8085:8085"
-    image: gui66497/fscrawler:2.7-SNAPSHOT
+    image: toto1310/fscrawler:2.7-SNAPSHOT
     volumes:
-    - ./fscrawler/books:/usr/share/fscrawler/data/:ro #书本文件夹
-    - ./fscrawler/myjob:/usr/share/fscrawler/config-mount/myjob:ro #job配置文件
-    - ./fscrawler/_settings.json:/usr/share/fscrawler/config/_default/7/_settings.json #修改mapping
+    - ./fscrawler:/root/.fscrawler #配置文件夹
+    - ./books:/usr/share/fscrawler/data #文档目录
     networks:
-    - elk
+    - elasticsearch
     depends_on:
     - elasticsearch
+    restart: unless-stopped
+    command: FS_JAVA_OPTS="-DLOG_DIR=/usr/share/fscrawler/logs -DLOG_LEVEL=trace -DDOC_LEVEL=debug" fscrawler myjob
 
 networks:
-  elk:
+  elasticsearch:
     driver: bridge

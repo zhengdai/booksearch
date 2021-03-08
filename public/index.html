@@ -46,7 +46,7 @@
 
     <!-- 搜索结果卡片列表 -->
     <div class="search-results" ref="searchResults">
-      <div class="mui-panel" v-for="hit in searchResults" v-on:click="showBookModal(hit)">
+      <div class="mui-panel" v-for="hit in searchResults" v-on:click="download(hit)">
         <div class="mui--text-subhead">文件名：{{ hit._source.file.filename }}</div>
         <div class="mui-divider"></div>
         <!-- <div class="mui--text-title" v-html="hit.highlight.text[0]"></div> -->

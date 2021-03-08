@@ -36,9 +36,7 @@ module.exports = {
     const body = {
       "query": {
         "bool": {
-          "should": [
-            phrases
-          ],
+          "should": phrases,
           "minimum_should_match": 1
         }
       }

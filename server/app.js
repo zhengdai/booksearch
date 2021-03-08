@@ -3,6 +3,7 @@ const koaBody = require('koa-body');
 const Router = require('koa-router')
 const joi = require('joi')
 const validate = require('koa-joi-validate')
+const send = require('koa-send')
 const search = require('./search')
 const app = new Koa()
 const router = new Router()
@@ -85,7 +86,7 @@ router.post('/upload',
     for (let file of files) {
       // 获取上传文件扩展名
       const ext = file.name.split('.').pop();
-      if (["docx", "doc", "txt", "pdf"].indexOf(ext) < 0) {
+      if (["docx", "doc", "txt", "pdf", 'xlsx', 'eml', 'ppt', 'pptx'].indexOf(ext) < 0) {
         return ctx.body = JSON.stringify({"result": "error", "message": "后缀名[" + ext + "]不支持"});
       }
       // 创建可读流
@@ -104,6 +105,15 @@ router.get('/count',
       ctx.body = await search.queryCount()
     }
 );
+
+router.get('/download/:filename', async (ctx) => {
+    const name = ctx.params.filename;
+    console.log(name);
+    const path = `books/${name}`;
+    console.log(path);
+    ctx.attachment(path);
+    await send(ctx, path);
+})
 
 const port = process.env.PORT || 3000
 

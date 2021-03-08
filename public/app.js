@@ -2,8 +2,9 @@ const vm = new Vue ({
   el: '#vue-instance',
   data () {
     return {
-      baseUrl: 'http://API_HOST:3000', // API url
-      searchTerm: 'fscrawler', // Default search term
+      baseUrl: 'http://localhost:3000', // API url
+      searchTerm: 'fscrawler',
+      // Default search term
       searchDebounce: null, // Timeout for search bar debounce
       searchResults: [], // Displayed search results
       numHits: null, // Total search results found
@@ -159,6 +160,9 @@ const vm = new Vue ({
     async prevBookPage () {
       this.$refs.bookModal.scrollTop = 0
       this.paragraphs = await this.getParagraphs(this.selectedParagraph._source.title, this.bookOffset - 10)
+    },
+    download(searchHit) {
+      window.open(`${this.baseUrl}/download/${searchHit._source.file.filename}`);
     },
     /** Display paragraphs from selected book in modal window */
     async showBookModal (searchHit) {
