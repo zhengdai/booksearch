@@ -68,7 +68,7 @@ services:
     depends_on:
     - elasticsearch
     restart: unless-stopped
-    command: FS_JAVA_OPTS="-DLOG_DIR=/usr/share/fscrawler/logs -DLOG_LEVEL=trace -DDOC_LEVEL=debug" fscrawler myjob
+    command: fscrawler myjob
 
 networks:
   elasticsearch:
