@@ -17,15 +17,15 @@
     <div class="mui-panel">
         <div class="mui-col-md-10">
             <div class="mui-textfield">
-                <input v-model="searchTerm" type="text" v-on:keyup="onSearchInput()">
+                <input v-model="searchTerm" type="text" v-on:keyup.enter="onSearchInput" >
                 <label>Search</label>
             </div>
         </div>
         <!--文件上传-->
         <div class="mui-col-md-2">
             <div id="app">
-                <input type="file" multiple id="files" name="files" @keyup.enter="changeFile" style="display:none;" />
-                <button @click="changeFile" class="mui-btn mui-btn--raised">搜索</button>
+<!--                <input type="file" multiple id="files" name="files" @change="changeFile" style="display:none;" />-->
+                <button @click="onSearchInput" class="mui-btn mui-btn--raised">搜索</button>
 <!--                <button @click="upload" class="mui-btn mui-btn&#45;&#45;raised">点击上传</button><br />-->
 <!--                <p>{{fileCount}}&nbsp;&nbsp;{{rate}} </p>-->
             </div>

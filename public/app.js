@@ -3,7 +3,7 @@ const vm = new Vue ({
   data () {
     return {
       baseUrl: 'http://localhost:3000', // API url
-      searchTerm: 'fscrawler',
+      searchTerm: '',
       // Default search term
       searchDebounce: null, // Timeout for search bar debounce
       searchResults: [], // Displayed search results
@@ -27,7 +27,7 @@ const vm = new Vue ({
     }
   },
   async created () {
-    this.searchResults = await this.search() // 触发搜索
+    // this.searchResults = await this.search() // 触发搜索
     const aggInfo = await this.count() //触发统计
     this.buckets = aggInfo.aggregations.group_by_extension.buckets;
     if (aggInfo.hits.hits[0] && aggInfo.hits.hits[0]._source.file.last_modified) {
