@@ -24,23 +24,28 @@
         <!--文件上传-->
         <div class="mui-col-md-2">
             <div id="app">
-                <input type="file" multiple id="files" name="files" @change="changeFile" style="display:none;" />
-                <button @click="selectfile" class="mui-btn mui-btn--raised">选择文件</button>
-                <button @click="upload" class="mui-btn mui-btn--raised">点击上传</button><br />
-                <p>{{fileCount}}&nbsp;&nbsp;{{rate}} </p>
+                <input type="file" multiple id="files" name="files" @keyup.enter="changeFile" style="display:none;" />
+                <button @click="changeFile" class="mui-btn mui-btn--raised">搜索</button>
+<!--                <button @click="upload" class="mui-btn mui-btn&#45;&#45;raised">点击上传</button><br />-->
+<!--                <p>{{fileCount}}&nbsp;&nbsp;{{rate}} </p>-->
             </div>
         </div>
     </div>
 
     <!-- 搜索元信息 -->
     <div class="mui-panel">
-        <div class="mui-col-md-10">
+        <div class="mui-col-md-8">
             <div class="mui--text-headline">{{ numHits }} 命中</div>
             <div class="mui--text-subhead">展示结果： {{ searchOffset }} - {{ searchOffset + 9 }}</div>
         </div>
-        <div class="mui-col-md-2">
+        <div class="mui-col-md-4">
             <div class="mui--text-headline">&nbsp;</div>
-            <div class="mui--text-subhead" style="text-align: right">共收录文档{{ docCount }} 篇</div>
+            <div class="mui--text-subhead" style="text-align: right">最后更新时间：{{ lastModified }}，共收录文档{{ docCount }}篇，其中
+                <p style="display: inline" v-for="bucket in buckets">
+                    {{bucket.key}}: {{bucket.doc_count}}篇
+                </p>
+            </div>
+
         </div>
     </div>
 

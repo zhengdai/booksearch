@@ -13,8 +13,9 @@ const vm = new Vue ({
       selectedParagraph: null, // Selected paragraph object
       bookOffset: 0, // Offset for book paragraphs being displayed
       paragraphs: [], // Paragraphs being displayed in book preview window
-
       docCount: 0,  //文档总数
+      lastModified: '',
+      buckets: [],
       fileCount:"", //选择文件数
       files:{},
       rate:"",  //上传进度
@@ -27,7 +28,14 @@ const vm = new Vue ({
   },
   async created () {
     this.searchResults = await this.search() // 触发搜索
-    this.docCount = await this.count() //触发统计
+    const aggInfo = await this.count() //触发统计
+    this.buckets = aggInfo.aggregations.group_by_extension.buckets;
+    if (aggInfo.hits.hits[0] && aggInfo.hits.hits[0]._source.file.last_modified) {
+      this.lastModified = new Date(aggInfo.hits.hits[0]._source.file.last_modified).toLocaleString();
+    }
+    this.buckets.forEach(item => {
+      this.docCount += item.doc_count;
+    });
   },
   methods: {
     /** Debounce search input by 100 ms */
@@ -49,7 +57,7 @@ const vm = new Vue ({
     /** Call API to search for inputted term */
     async count () {
       const response = await axios.get(`${this.baseUrl}/count`)
-      return response.data.count
+      return response.data
     },
     /** 选择文件 */
     async selectfile() {

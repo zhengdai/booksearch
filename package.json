@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Source code for ElasticSearch tutorial using 100 classic open source books.",
   "scripts": {
-    "start": "node server/app.js"
+    "start": "ES_HOST=localhost node server/app.js"
   },
   "repository": {
     "type": "git",

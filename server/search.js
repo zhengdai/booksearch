@@ -44,9 +44,24 @@ module.exports = {
     return client.search({ index, type, body })
   },
 
-  /** 获取文档总数 */
+  /** 获取文档分类总数 */
   async queryCount() {
-    return await client.count({index, type})
+    const body = {
+      size: 1,
+      sort: { "file.last_modified": { order: "desc" }},
+      aggs: {
+        group_by_extension: {
+          terms: {
+            field: "file.extension"
+          }
+        }
+      }
+    };
+    return await client.search({
+      index,
+      type,
+      body,
+    })
   }
 
 }

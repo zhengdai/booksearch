@@ -59,16 +59,15 @@ services:
 
   fscrawler: # 文档自动存es
     container_name: fscrawler
-    image: toto1310/fscrawler:2.7-SNAPSHOT
+    image: zhengdai/fscrawler:2.7
     volumes:
-    - ./fscrawler:/root/.fscrawler #配置文件夹
-    - ./books:/usr/share/fscrawler/data #文档目录
+    - ./fscrawler:/usr/app/config #配置文件夹
+    - ./books:/usr/app/data/idx #文档目录
     networks:
     - elasticsearch
     depends_on:
     - elasticsearch
     restart: unless-stopped
-    command: fscrawler myjob
 
 networks:
   elasticsearch:

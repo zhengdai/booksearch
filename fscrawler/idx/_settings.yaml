@@ -1,7 +1,7 @@
 ---
-name: "myjob"
+name: "idx"
 fs:
-  url: "/usr/share/fscrawler/data"
+  url: "/usr/app/data/idx"
   update_rate: "1m"
   excludes:
   - "*/~*"

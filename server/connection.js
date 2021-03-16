@@ -1,7 +1,7 @@
 const elasticsearch = require('elasticsearch')
 
 // Core ES variables for this project
-const index = 'myjob'
+const index = 'idx'
 const type = '_doc'
 const port = 9200
 const host = process.env.ES_HOST || 'elasticsearch'
